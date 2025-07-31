@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Vista previa de cotización</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abhaya+Libre&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Advent+Pro&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Afacad+Flux&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Agdasima&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aladin&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Almendra+SC&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/css/quote-form.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Vista previa de cotización</h2><iframe id="pdfFrame"></iframe>
+        <div class="actions"><a class="btn preview" role="button" id="openPdfBtn" href="#" target="_blank">Abrir PDF en nueva pestaña</a><a class="btn" role="button" id="whatsappBtn" href="#" target="_blank">Enviar por WhatsApp</a></div>
+    </div><script>
+    // Obtiene el id de la cotización desde la query string (?id=123)
+    function getQuoteId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || '1';
+    }
+    const quoteId = getQuoteId();
+    const previewUrl = `${window.location.origin}/api/quotes/${quoteId}/pdf`;
+    document.getElementById('pdfFrame').src = previewUrl;
+    document.getElementById('openPdfBtn').href = previewUrl;
+    const whatsappMessage = encodeURIComponent(`Hola Frimousse, me interesa cotizar un pastel. Aquí está mi cotización: ${previewUrl}`);
+    document.getElementById('whatsappBtn').href = `https://wa.me/527717227089?text=${whatsappMessage}`;
+  </script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/form-handler.js"></script>
+</body>
+
+</html>
