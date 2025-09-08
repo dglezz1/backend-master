@@ -79,9 +79,10 @@ export async function generateQuotePdf(quote: Partial<any>): Promise<Buffer> {
     ['Aceptó términos', quote.agreement ? 'Sí' : 'No'],
   ]));
   // Renderizar imágenes
-  if (quote.imageUrls && Array.isArray(quote.imageUrls)) {
+  const imageUrls = quote.imageUrls ? JSON.parse(quote.imageUrls) : [];
+  if (imageUrls && Array.isArray(imageUrls)) {
     html = html.replace(/{{#each imageUrls}}([\s\S]*?){{\/each}}/g,
-      quote.imageUrls.map(url => `<img src="${url}" class="ref-image" width="200" height="150">`).join(''));
+      imageUrls.map(url => `<img src="${url}" class="ref-image" width="200" height="150">`).join(''));
   }
   // Inyectar CSS
   html = html.replace('</head>', `<style>${css}</style></head>`);

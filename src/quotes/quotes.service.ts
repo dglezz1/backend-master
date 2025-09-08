@@ -18,6 +18,17 @@ export class QuotesService {
    * Obtiene una cotización por ID
    */
   async getQuoteById(id: number) {
-    return this.prisma.quote.findUnique({ where: { id } });
+    console.log('getQuoteById called with id:', id, 'type:', typeof id);
+    const numId = Number(id);
+    console.log('Converted id:', numId, 'isNaN:', isNaN(numId));
+    
+    if (!id || isNaN(numId)) {
+      throw new Error(`ID inválido: ${id} (convertido: ${numId})`);
+    }
+    return this.prisma.quote.findUnique({ 
+      where: { 
+        id: numId 
+      } 
+    });
   }
 }

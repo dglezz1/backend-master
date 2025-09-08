@@ -1,31 +1,193 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Frimousse Pâtisserie - Sistema de Cotizaciones
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema web moderno para cotizaciones de pasteles con visualización dinámica y almacenamiento local de imágenes.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- **Visualización Dinámica**: Cotizaciones 100% en línea con interfaz web moderna
+- **Galería de Imágenes**: Visualización de imágenes con zoom completo
+- **Almacenamiento Local**: Sin dependencias externas como Cloudinary
+- **Containerización**: Deploy fácil con Docker
+- **Base de Datos SQLite**: Configuración simple y portable
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Requisitos
 
-## Project setup
+- Node.js 18+ 
+- npm o yarn
+- Docker (opcional, para deploy)
+
+## 🛠️ Instalación Local
+
+### 1. Clonar el repositorio
+```bash
+git clone <repository-url>
+cd backend-master
+```
+
+### 2. Instalar dependencias
+```bash
+npm install
+```
+
+### 3. Configurar base de datos
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 4. Iniciar servidor de desarrollo
+```bash
+npm run start:dev
+```
+
+La aplicación estará disponible en: http://localhost:3000
+
+## 🐳 Deploy con Docker
+
+### Opción 1: Script de Deploy Automático
+```bash
+./deploy.sh
+```
+
+### Opción 2: Manual
+```bash
+# Construir imagen
+docker-compose build
+
+# Iniciar servicios
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f app
+```
+
+### Detener servicios
+```bash
+docker-compose down
+```
+
+## 📁 Estructura del Proyecto
+
+```
+├── src/
+│   ├── quotes/           # Módulo principal de cotizaciones
+│   ├── prisma.service.ts # Servicio de base de datos
+│   ├── view.controller.ts # Controlador para vistas HTML
+│   └── main.ts          # Configuración principal
+├── prisma/
+│   ├── schema.prisma    # Esquema de base de datos
+│   └── dev.db          # Base de datos SQLite
+├── public/
+│   ├── index.html      # Formulario principal
+│   ├── cotizacion-view.html # Vista dinámica de cotizaciones
+│   └── assets/         # CSS, JS, imágenes
+├── uploads/            # Almacenamiento local de imágenes
+├── docker-compose.yml  # Configuración Docker
+├── Dockerfile         # Imagen Docker
+└── deploy.sh         # Script de deploy automático
+```
+
+## 🎨 Funcionalidades
+
+### Formulario de Cotización
+- Información del cliente
+- Selección de tipo de pastel
+- Subida de imágenes de referencia
+- Detalles de entrega
+
+### Visualización Dinámica
+- Vista web moderna de la cotización
+- Galería de imágenes con zoom
+- Enlaces directos de WhatsApp
+- Información completa del pedido
+
+### API Endpoints
+- `POST /api/quotes` - Crear cotización
+- `GET /api/quotes/:id/view-data` - Datos de cotización (JSON)
+- `GET /cotizacion/view/:id` - Vista HTML de cotización
+- `GET /api/quotes/:id/pdf` - Generar PDF
+
+## 🔧 Configuración
+
+### Variables de Entorno
+```env
+NODE_ENV=production
+PUBLIC_BASE_URL=http://localhost:3000
+DATABASE_URL=file:./prisma/dev.db
+```
+
+### Base de Datos
+El sistema usa SQLite por defecto para simplicidad. La base de datos se crea automáticamente.
+
+### Almacenamiento de Imágenes
+Las imágenes se almacenan localmente en la carpeta `uploads/` y se sirven como archivos estáticos.
+
+## 📱 Uso
+
+1. **Crear Cotización**: Llenar el formulario en la página principal
+2. **Ver Cotización**: Usar el enlace generado o acceder directamente a `/cotizacion/view/:id`
+3. **Compartir**: Usar el enlace de WhatsApp generado automáticamente
+
+## 🛠️ Desarrollo
+
+### Comandos útiles
+```bash
+# Desarrollo con hot reload
+npm run start:dev
+
+# Compilar
+npm run build
+
+# Producción
+npm run start:prod
+
+# Linting
+npm run lint
+
+# Formatear código
+npm run format
+
+# Regenerar cliente Prisma
+npx prisma generate
+
+# Reset base de datos
+npx prisma db push --force-reset
+```
+
+## 🚢 Deploy en Servidor
+
+### 1. Subir archivos al servidor
+```bash
+scp -r . user@server:/path/to/app
+```
+
+### 2. Ejecutar deploy
+```bash
+cd /path/to/app
+./deploy.sh
+```
+
+### 3. Configurar proxy reverso (nginx)
+```nginx
+server {
+    listen 80;
+    server_name tu-dominio.com;
+    
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+## 📞 Soporte
+
+Para soporte técnico, contactar al desarrollador del sistema.
+
+---
+
+**Frimousse Pâtisserie** - Sistema desarrollado para cotizaciones modernas de pasteles
 
 ```bash
 $ npm install

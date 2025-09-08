@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Cotización - Frimousse Pâtisserie</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/quote-viewer.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Cargando cotización...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="error" style="display: none;">
+            <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
+            <p id="error-message"></p>
+            <a href="/cotizacion.html" class="nav-btn" style="margin-top: 15px;">
+                <i class="fas fa-arrow-left"></i> Volver al formulario
+            </a>
+        </div>
+
+        <!-- Quote Viewer -->
+        <div id="quote-viewer" class="quote-viewer" style="display: none;">
+            <!-- Header -->
+            <div class="quote-header">
+                <img id="company-logo" src="/assets/img/FRIMOUSSE_PATISSERIE__2_-removebg-preview.png" alt="Frimousse Pâtisserie" class="logo">
+                <h1>Frimousse Pâtisserie</h1>
+                <p class="subtitle">Cotización de Pastel</p>
+                <div id="quote-number" class="quote-number"></div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="quote-nav">
+                <div class="nav-links">
+                    <a href="/cotizacion.html" class="nav-btn">
+                        <i class="fas fa-arrow-left"></i> Nueva Cotización
+                    </a>
+                    <button onclick="window.print()" class="nav-btn">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                    <a id="pdf-download" href="#" class="nav-btn">
+                        <i class="fas fa-file-pdf"></i> Descargar PDF
+                    </a>
+                </div>
+                <div class="nav-links">
+                    <a id="whatsapp-link" href="#" target="_blank" class="nav-btn whatsapp">
+                        <i class="fab fa-whatsapp"></i> Enviar por WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- Client Info Section -->
+            <div class="quote-section">
+                <div class="section-header">
+                    <i class="fas fa-user section-icon"></i>
+                    <span>Datos del Cliente</span>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid" id="client-info">
+                        <!-- Client info will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cake Details Section -->
+            <div class="quote-section">
+                <div class="section-header">
+                    <i class="fas fa-birthday-cake section-icon"></i>
+                    <span>Detalles del Pastel</span>
+                </div>
+                <div class="section-content">
+                    <div class="cake-details">
+                        <div id="cake-type" class="cake-type">
+                            <i class="fas fa-cake-candles"></i>
+                            <span></span>
+                        </div>
+                        <div class="cake-specs" id="cake-specs">
+                            <!-- Cake specs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Section -->
+            <div class="quote-section">
+                <div class="section-header">
+                    <i class="fas fa-truck section-icon"></i>
+                    <span>Entrega y Condiciones</span>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid" id="delivery-info">
+                        <!-- Delivery info will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images Section -->
+            <div class="quote-section images-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-images section-icon"></i>
+                        <span>Imágenes de Referencia</span>
+                    </div>
+                    <button id="download-all-btn" class="download-all-btn" onclick="downloadAllImages()" title="Descargar todas las imágenes" style="display: none;">
+                        <i class="fas fa-download"></i> Descargar todas
+                    </button>
+                </div>
+                <div class="section-content">
+                    <div id="images-gallery" class="images-gallery">
+                        <!-- Images will be populated here -->
+                    </div>
+                    <div id="no-images" class="no-images" style="display: none;">
+                        <i class="fas fa-image" style="font-size: 3em; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>No se subieron imágenes de referencia</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="quote-footer">
+                <div class="footer-content">
+                    <h3><i class="fab fa-whatsapp"></i> ¿Listo para tu pastel?</h3>
+                    <p>Para obtener una cotización final y hacer tu pedido, contáctanos por WhatsApp:</p>
+                    <a id="footer-whatsapp" href="#" target="_blank" class="whatsapp-link">
+                        <i class="fab fa-whatsapp"></i> +52 771-722-7089
+                    </a>
+                </div>
+                <div class="brand">
+                    Frimousse Pâtisserie · Cotización generada automáticamente
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modal-image" src="" alt="" class="modal-image">
+        </div>
+    </div>
+
+    <script>
+        // Get quote ID from URL
+        const urlParts = window.location.pathname.split('/');
+        const quoteId = urlParts[urlParts.length - 1];
+
+        // API base URL
+        const API_BASE = '/api';
+
+        // DOM elements
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const quoteViewerEl = document.getElementById('quote-viewer');
+        const errorMessageEl = document.getElementById('error-message');
+
+        // Load quote data
+        async function loadQuote() {
+            try {
+                const response = await fetch(`${API_BASE}/quotes/${quoteId}/view-data`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Error al cargar la cotización');
+                }
+
+                displayQuote(result.data);
+                
+            } catch (error) {
+                console.error('Error loading quote:', error);
+                showError(error.message);
+            }
+        }
+
+        // Display quote data
+        function displayQuote(data) {
+            const { quote, quoteNumber, whatsappLink } = data;
+
+            // Hide loading, show quote
+            loadingEl.style.display = 'none';
+            quoteViewerEl.style.display = 'block';
+
+            // Set quote number
+            document.getElementById('quote-number').textContent = `No. Cotización: ${quoteNumber}`;
+
+            // Set WhatsApp links
+            document.getElementById('whatsapp-link').href = whatsappLink;
+            document.getElementById('footer-whatsapp').href = whatsappLink;
+
+            // Set PDF download link
+            document.getElementById('pdf-download').href = `${API_BASE}/quotes/${quoteId}/pdf`;
+
+            // Populate client info
+            populateClientInfo(quote);
+
+            // Populate cake details
+            populateCakeDetails(quote);
+
+            // Populate delivery info
+            populateDeliveryInfo(quote);
+
+            // Populate images
+            populateImages(quote.imageUrls);
+
+            // Update page title
+            document.title = `Cotización ${quoteNumber} - Frimousse Pâtisserie`;
+        }
+
+        // Populate client information
+        function populateClientInfo(quote) {
+            const clientInfo = document.getElementById('client-info');
+            
+            const clientData = [
+                { label: 'Nombre', value: quote.fullName },
+                { label: 'Contacto', value: quote.contact },
+                { label: 'Redes Sociales', value: quote.socialMedia || '-' },
+                { label: 'Invitados', value: `${quote.guests} personas` }
+            ];
+
+            clientInfo.innerHTML = clientData.map(item => `
+                <div class="info-item">
+                    <div class="info-label">${item.label}</div>
+                    <div class="info-value">${item.value}</div>
+                </div>
+            `).join('');
+        }
+
+        // Populate cake details
+        function populateCakeDetails(quote) {
+            // Set cake type
+            document.querySelector('#cake-type span').textContent = quote.cakeType;
+
+            // Set cake specifications
+            const cakeSpecs = document.getElementById('cake-specs');
+            
+            const specs = [
+                { label: 'Sabor 3 Leches', value: quote.threeMilkFlavor || '-' },
+                { label: 'Sabor de Pan', value: quote.breadFlavor || '-' },
+                { label: 'Sabor de Relleno', value: quote.fillingFlavor || '-' },
+                { label: 'Pastel Premium', value: quote.premiumCake || '-' },
+                { label: 'Cambios al Diseño', value: quote.designChanges || '-' }
+            ].filter(spec => spec.value !== '-');
+
+            cakeSpecs.innerHTML = specs.map(spec => `
+                <div class="spec-item">
+                    <div class="spec-label">${spec.label}</div>
+                    <div class="spec-value">${spec.value}</div>
+                </div>
+            `).join('');
+        }
+
+        // Populate delivery information
+        function populateDeliveryInfo(quote) {
+            const deliveryInfo = document.getElementById('delivery-info');
+            
+            const deliveryData = [
+                { label: 'Alergias', value: quote.allergies ? 'Sí' : 'No' },
+                { label: 'Descripción de Alergias', value: quote.allergyDescription || '-' },
+                { label: 'Fecha de Entrega', value: formatDate(quote.deliveryDate) },
+                { label: 'Horario de Entrega', value: quote.deliveryTime },
+                { label: 'Tipo de Entrega', value: quote.deliveryType },
+                { label: 'Dirección de Entrega', value: quote.homeDeliveryAddress || '-' },
+                { label: 'Acepta Términos', value: quote.agreement ? 'Sí' : 'No' }
+            ];
+
+            deliveryInfo.innerHTML = deliveryData.map(item => `
+                <div class="info-item">
+                    <div class="info-label">${item.label}</div>
+                    <div class="info-value">${item.value}</div>
+                </div>
+            `).join('');
+        }
+
+        // Populate images gallery
+        function populateImages(imageUrls) {
+            const gallery = document.getElementById('images-gallery');
+            const noImages = document.getElementById('no-images');
+            const downloadAllBtn = document.getElementById('download-all-btn');
+
+            if (!imageUrls || imageUrls.length === 0) {
+                gallery.style.display = 'none';
+                noImages.style.display = 'block';
+                downloadAllBtn.style.display = 'none';
+                return;
+            }
+
+            gallery.style.display = 'grid';
+            noImages.style.display = 'none';
+            downloadAllBtn.style.display = 'inline-flex';
+
+            gallery.innerHTML = imageUrls.map((url, index) => {
+                const filename = url.split('/').pop();
+                return `
+                    <div class="image-container">
+                        <img src="${url}" alt="Imagen de referencia ${index + 1}" loading="lazy" onclick="openImageModal('${url}')">
+                        <div class="image-overlay" onclick="openImageModal('${url}')">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                            <br>Click para ampliar
+                        </div>
+                        <div class="image-actions">
+                            <button class="download-btn" onclick="downloadImage('${filename}')" title="Descargar imagen">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Show error
+        function showError(message) {
+            loadingEl.style.display = 'none';
+            errorMessageEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        // Image modal functions
+        window.openImageModal = function(imageUrl) {
+            console.log('Opening modal with image:', imageUrl);
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            if (!modal || !modalImage) {
+                console.error('Modal elements not found');
+                return;
+            }
+            
+            modalImage.src = imageUrl;
+            modal.classList.add('active');
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeImageModal = function() {
+            console.log('Closing modal');
+            const modal = document.getElementById('image-modal');
+            if (!modal) return;
+            
+            modal.classList.remove('active');
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+            
+            // Clear modal image src to free memory
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    document.getElementById('modal-image').src = '';
+                }
+            }, 300);
+        }
+
+        // Download individual image function
+        window.downloadImage = function(filename) {
+            const downloadUrl = `/api/quotes/${quoteId}/images/${filename}/download`;
+            
+            // Create a temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Download all images function
+        window.downloadAllImages = function() {
+            fetch(`/api/quotes/${quoteId}/images`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.images.length > 0) {
+                        // Download each image with a small delay to avoid overwhelming the browser
+                        data.images.forEach((image, index) => {
+                            setTimeout(() => {
+                                downloadImage(image.filename);
+                            }, index * 500); // 500ms delay between downloads
+                        });
+                    } else {
+                        alert('No hay imágenes para descargar');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching images info:', error);
+                    alert('Error al obtener información de las imágenes');
+                });
+        }
+
+        // Close modal on ESC key or click outside
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Close on background click or modal image click
+        document.getElementById('image-modal').addEventListener('click', function(e) {
+            if (e.target === this || e.target.classList.contains('modal-image')) {
+                closeImageModal();
+            }
+        });
+
+        // Prevent modal from closing when clicking on modal content
+        document.querySelector('.modal-content').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Initialize
+        if (quoteId) {
+            loadQuote();
+        } else {
+            showError('ID de cotización no válido');
+        }
+    </script>
+</body>
+</html>
