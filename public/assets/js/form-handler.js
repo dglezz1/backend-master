@@ -429,11 +429,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="${banner.whatsappLink}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:white;font-weight:600;padding:12px 22px;border-radius:8px;font-size:1.1em;text-decoration:none;box-shadow:0 2px 8px rgba(37,211,102,0.13);transition:background 0.2s;">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
-                <a href="${banner.pdfUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#667eea;color:white;font-weight:600;padding:12px 22px;border-radius:8px;font-size:1.1em;text-decoration:none;box-shadow:0 2px 8px rgba(102,126,234,0.13);transition:background 0.2s;">
-                    <i class="fas fa-file-pdf"></i> Descargar PDF
+                <a href="${banner.viewUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#667eea;color:white;font-weight:600;padding:12px 22px;border-radius:8px;font-size:1.1em;text-decoration:none;box-shadow:0 2px 8px rgba(102,126,234,0.13);transition:background 0.2s;">
+                    <i class="fas fa-eye"></i> Ver Cotización
                 </a>
             </div>
-            <div style="color:#888;font-size:0.98em;margin-top:10px;">⏰ Tiempo de respuesta: 2-4 horas en horario laboral<br>💡 Los precios NO se muestran en documentos web, solo por WhatsApp.</div>
+            <div style="color:#888;font-size:0.98em;margin-top:10px;">⏰ Tiempo de respuesta: 2-4 horas en horario laboral<br>💡 Los precios NO se muestran en documentos web, solo por WhatsApp.<br>🎂 <strong>Haz clic en "Ver Cotización"</strong> para acceder a tu cotización interactiva.</div>
         `;
 
         // Insertar el banner antes del formulario

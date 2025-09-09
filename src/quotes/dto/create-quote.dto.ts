@@ -83,9 +83,8 @@ export class CreateQuoteDto {
   @IsBoolean()
   agreement: boolean;
 
-  @ApiPropertyOptional({ description: 'URLs de imágenes subidas' })
-  @IsArray()
-  @IsString({ each: true })
+  @ApiPropertyOptional({ description: 'URLs de imágenes subidas como JSON string' })
   @IsOptional()
-  imageUrls?: string[];
+  @IsString()
+  imageUrls?: string;
 }

@@ -9,11 +9,19 @@ async function bootstrap() {
   // Cargar variables de entorno antes de crear la app
   require('dotenv').config();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
   // Servir archivos estáticos desde /public
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  
+  // Servir archivos subidos desde /uploads
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
-  // Prefijo global para la API
-  app.setGlobalPrefix('api');
+  // Prefijo global para la API (excluyendo rutas de vista)
+  app.setGlobalPrefix('api', {
+    exclude: ['/cotizacion/view/:id']
+  });
 
   // Configuración Swagger
   const config = new DocumentBuilder()
