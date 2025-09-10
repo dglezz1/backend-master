@@ -45,7 +45,14 @@ export class QuotesController {
       // Convertir allergies y agreement a booleano si vienen como string
       const allergies = typeof body.allergies === 'string' ? (body.allergies === 'true' || body.allergies === 'yes') : !!body.allergies;
       const agreement = typeof body.agreement === 'string' ? (body.agreement === 'true' || body.agreement === 'yes') : !!body.agreement;
-      const quote = await this.quotesService.createQuote({ ...body, guests, allergies, agreement, imageUrls: JSON.stringify(imageUrls) });
+      
+      const quote = await this.quotesService.createQuote({ 
+        ...body, 
+        guests, 
+        allergies, 
+        agreement, 
+        imageUrls: JSON.stringify(imageUrls) 
+      });
       // Generar número de cotización: fecha (ddmmyy) + id usando createdAt
       let quoteNumber = '';
       if (quote.createdAt && quote.id) {
@@ -61,6 +68,8 @@ export class QuotesController {
       const whatsappNumber = '+52 771-722-7089';
       // Mensaje con enlace único para la vista web
       const baseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+      const domain = process.env.DOMAIN || 'localhost:3000';
+      const websiteUrl = `https://${domain}`;
       const fullViewUrl = `${baseUrl}${viewUrl}`;
       const whatsappMessage = encodeURIComponent(`Hola Frimousse, me interesa cotizar un pastel. Aquí está mi cotización: ${fullViewUrl}`);
       const whatsappLink = `https://wa.me/527717227089?text=${whatsappMessage}`;
@@ -79,6 +88,8 @@ export class QuotesController {
             message: 'Puedes ver tu cotización en línea o contactarnos por WhatsApp para recibir tu precio final.',
             whatsappLink,
             viewUrl: fullViewUrl,
+            websiteUrl,
+            domain,
             brand: 'Frimousse Pâtisserie · Cotización generada automáticamente'
           }
         }
@@ -176,6 +187,8 @@ export class QuotesController {
       // Enlaces de WhatsApp
       const whatsappNumber = '+52 771-722-7089';
       const baseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+      const domain = process.env.DOMAIN || 'localhost:3000';
+      const websiteUrl = `https://${domain}`;
       const viewUrl = `${baseUrl}/cotizacion/view/${quote.id}`;
       const whatsappMessage = encodeURIComponent(`Hola Frimousse, me interesa cotizar un pastel. Aquí está mi cotización: ${viewUrl}`);
       const whatsappLink = `https://wa.me/527717227089?text=${whatsappMessage}`;
@@ -198,7 +211,9 @@ export class QuotesController {
           quoteNumber,
           whatsappNumber,
           whatsappLink,
-          viewUrl
+          viewUrl,
+          domain,
+          websiteUrl: `https://${domain}`
         }
       };
     } catch (err) {
